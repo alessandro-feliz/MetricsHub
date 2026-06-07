@@ -5,6 +5,11 @@
 **Prompt:** Rename ResourceName to Node, make Region and Environment non-nullable, add RawPayload column, change Source to enum, remove source-specific fields and replace with a JSON Metrics column.
 **Files affected:** MetricsHub/PLAN.md
 
+## [2026-06-07 12:20] Add src and tests solution folders to MetricsHub.slnx
+
+**Prompt:** Update the solution file to display projects grouped under src/ and tests/ solution folders.
+**Files affected:** MetricsHub/MetricsHub.slnx
+
 ## [2026-06-07 12:15] Remove unused Directory.Build.props
 
 **Prompt:** Explained why Directory.Build.props is not needed and deleted it.

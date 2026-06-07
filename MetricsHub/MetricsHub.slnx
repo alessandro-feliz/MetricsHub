@@ -1,8 +1,12 @@
 <Solution>
-  <Project Path="src/MetricsHub.Domain/MetricsHub.Domain.csproj" />
-  <Project Path="src/MetricsHub.Application/MetricsHub.Application.csproj" />
-  <Project Path="src/MetricsHub.Infrastructure/MetricsHub.Infrastructure.csproj" />
-  <Project Path="src/MetricsHub.Api/MetricsHub.Api.csproj" />
-  <Project Path="tests/MetricsHub.Unit.Tests/MetricsHub.Unit.Tests.csproj" />
-  <Project Path="tests/MetricsHub.Integration.Tests/MetricsHub.Integration.Tests.csproj" />
+  <Folder Name="/src/">
+    <Project Path="src/MetricsHub.Domain/MetricsHub.Domain.csproj" />
+    <Project Path="src/MetricsHub.Application/MetricsHub.Application.csproj" />
+    <Project Path="src/MetricsHub.Infrastructure/MetricsHub.Infrastructure.csproj" />
+    <Project Path="src/MetricsHub.Api/MetricsHub.Api.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/MetricsHub.Unit.Tests/MetricsHub.Unit.Tests.csproj" />
+    <Project Path="tests/MetricsHub.Integration.Tests/MetricsHub.Integration.Tests.csproj" />
+  </Folder>
 </Solution>
