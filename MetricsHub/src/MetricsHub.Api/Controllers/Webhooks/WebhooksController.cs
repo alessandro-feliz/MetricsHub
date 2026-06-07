@@ -23,20 +23,6 @@ public class WebhooksController(WebhookIngestionService ingestionService) : Cont
 
         var result = await ingestionService.IngestAsync(source, rawPayload, ct);
 
-        return StatusCode(
-            StatusCodes.Status201Created,
-            new
-            {
-                result.Id,
-                result.Source,
-                result.SourceEventId,
-                result.OccurredAt,
-                result.IngestedAt,
-                result.Node,
-                result.Region,
-                result.Environment,
-                result.CorrelationId,
-            }
-        );
+        return StatusCode(StatusCodes.Status201Created, WebhookResponse.From(result));
     }
 }

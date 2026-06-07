@@ -12,6 +12,8 @@ public class EventsController(EventQueryService queryService) : ControllerBase
     {
         var result = await queryService.QueryAsync(query, ct);
 
-        return Ok(result);
+        var response = new PagedResult<EventResponse>(result.Items.Select(EventResponse.From).ToList(), result.TotalCount, result.Page, result.PageSize);
+
+        return Ok(response);
     }
 }

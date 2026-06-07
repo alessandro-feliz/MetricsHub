@@ -1,5 +1,10 @@
 # AI Prompt Log
 
+## [2026-06-07 18:00] Introduce API response DTOs
+
+**Prompt:** Add IngestEventResponse and EventResponse DTOs in the Api layer with static From factory methods; update WebhooksController and EventsController to return DTOs instead of NormalizedEvent directly, omitting RawPayload and other internal fields.
+**Files affected:** MetricsHub/src/MetricsHub.Api/Controllers/Webhooks/IngestEventResponse.cs, MetricsHub/src/MetricsHub.Api/Controllers/Events/EventResponse.cs, MetricsHub/src/MetricsHub.Api/Controllers/Webhooks/WebhooksController.cs, MetricsHub/src/MetricsHub.Api/Controllers/Events/EventsController.cs
+
 ## [2026-06-07 17:50] Update README production improvements, known limitations, and add team discussion topics
 
 **Prompt:** Populate the "What I would do differently" chapter with auth, cleanup routines, and rate limiting entries; update "Known limitations" with duplicate handling and environment extraction notes; add a new "Topics I would discuss with the team" chapter covering schema design, code split strategy, and duplicate event policy.

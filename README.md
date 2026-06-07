@@ -254,6 +254,8 @@ Services use `MetricsHubDbContext` directly — no repository layer. The abstrac
 
 **Single-instance deployment assumed** — EF Core migrations run at startup without a distributed lock. Running multiple replicas simultaneously could cause migration race conditions.
 
+**Duplicate event policy** — Duplicated events are ignored and the API returns a 201. The client is not able to know if the event was created and ignore because it was duplicated.
+
 ---
 
 ## Topics I would discuss or clarify with the team
