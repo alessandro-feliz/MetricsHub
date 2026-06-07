@@ -23,4 +23,5 @@ Rules:
 ## General Behavior
 - Write clean, idiomatic C# / .NET 8 code.
 - Prefer explicit over clever.
+- One class or enum per file — no exceptions.
 - If you are unsure about a design decision, ask — do not assume.
