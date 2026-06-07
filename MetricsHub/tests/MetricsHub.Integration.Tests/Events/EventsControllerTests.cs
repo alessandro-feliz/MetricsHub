@@ -135,4 +135,31 @@ public class EventsControllerTests(MetricsHubWebApplicationFactory factory)
         var body = JsonDocument.Parse(await response.Content.ReadAsStringAsync()).RootElement;
         body.GetProperty("items").GetArrayLength().Should().Be(1);
     }
+
+    [Fact]
+    public async Task Get_MalformedQuery_NonIntegerPage_ReturnsBadRequest()
+    {
+        var response = await _client.GetAsync("/events?page=abc");
+
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+    [Fact]
+    public async Task Get_MalformedQuery_NegativePage_ReturnsBadRequest()
+    {
+        var response = await _client.GetAsync("/events?page=-1");
+
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+    [Fact]
+    public async Task Get_FilterByNodeWithNoMatches_ReturnsEmptyResult()
+    {
+        var response = await _client.GetAsync("/events?node=node-does-not-exist-xyz");
+
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var body = JsonDocument.Parse(await response.Content.ReadAsStringAsync()).RootElement;
+        body.GetProperty("totalCount").GetInt32().Should().Be(0);
+        body.GetProperty("items").GetArrayLength().Should().Be(0);
+    }
 }

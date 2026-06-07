@@ -1,5 +1,20 @@
 # AI Prompt Log
 
+## [2026-06-07 17:25] Add Range validation to EventQuery and test for negative page
+
+**Prompt:** Add [Range] validation annotations to EventQuery.Page (min 1) and EventQuery.PageSize (1–100) so negative/zero values return 400; add integration test for page=-1.
+**Files affected:** MetricsHub/src/MetricsHub.Application/Services/Events/EventQuery.cs, MetricsHub/tests/MetricsHub.Integration.Tests/Events/EventsControllerTests.cs
+
+## [2026-06-07 17:20] Add integration tests for malformed query and empty result set
+
+**Prompt:** Add two integration tests to EventsControllerTests: one where EventQuery has a non-integer page parameter (expects 400), and one where the filter matches no events (expects 200 with empty items and totalCount 0).
+**Files affected:** MetricsHub/tests/MetricsHub.Integration.Tests/Events/EventsControllerTests.cs
+
+## [2026-06-07 17:15] Move Webhooks and Events folders under Controllers/
+
+**Prompt:** Move the Webhooks/ and Events/ controller folders inside a new Controllers/ parent folder in the Api project, updating namespaces accordingly.
+**Files affected:** MetricsHub/src/MetricsHub.Api/Controllers/Webhooks/WebhooksController.cs, MetricsHub/src/MetricsHub.Api/Controllers/Events/EventsController.cs
+
 ## [2026-06-07 17:00] Add Postman collection and update README step 4
 
 **Prompt:** Add a Postman collection JSON file users can import alongside the existing .http file; update the Send sample requests section to include both options with import steps.

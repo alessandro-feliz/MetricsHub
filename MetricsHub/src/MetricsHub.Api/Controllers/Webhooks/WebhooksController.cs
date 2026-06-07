@@ -1,7 +1,7 @@
 using MetricsHub.Application.Services.Webhooks;
 using Microsoft.AspNetCore.Mvc;
 
-namespace MetricsHub.Api.Webhooks;
+namespace MetricsHub.Api.Controllers.Webhooks;
 
 [ApiController]
 [Route("webhooks")]

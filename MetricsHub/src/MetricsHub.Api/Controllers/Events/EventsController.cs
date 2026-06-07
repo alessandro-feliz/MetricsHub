@@ -1,7 +1,7 @@
 using MetricsHub.Application.Services.Events;
 using Microsoft.AspNetCore.Mvc;
 
-namespace MetricsHub.Api.Events;
+namespace MetricsHub.Api.Controllers.Events;
 
 [ApiController]
 [Route("events")]
