@@ -131,4 +131,35 @@ public class WebhooksControllerTests(MetricsHubWebApplicationFactory factory)
 
         response.StatusCode.Should().Be(HttpStatusCode.UnprocessableEntity);
     }
+
+    [Fact]
+    public async Task Post_DuplicateEvent_Returns201BothTimes()
+    {
+        var payload = """
+            {
+                "pulse_id": "p-duplicate-test",
+                "ts": "2026-05-07T12:00:00Z",
+                "node": "worker-dup-01",
+                "region": "us-east-1",
+                "tags": ["production"]
+            }
+            """;
+
+        var first = new HttpRequestMessage(HttpMethod.Post, "/webhooks")
+        {
+            Content = JsonContent(payload),
+            Headers = { { "X-Source", "pulse" } },
+        };
+        var second = new HttpRequestMessage(HttpMethod.Post, "/webhooks")
+        {
+            Content = JsonContent(payload),
+            Headers = { { "X-Source", "pulse" } },
+        };
+
+        var firstResponse = await _client.SendAsync(first);
+        var secondResponse = await _client.SendAsync(second);
+
+        firstResponse.StatusCode.Should().Be(HttpStatusCode.Created);
+        secondResponse.StatusCode.Should().Be(HttpStatusCode.Created);
+    }
 }

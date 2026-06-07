@@ -1,5 +1,20 @@
 # AI Prompt Log
 
+## [2026-06-07 17:50] Update README production improvements, known limitations, and add team discussion topics
+
+**Prompt:** Populate the "What I would do differently" chapter with auth, cleanup routines, and rate limiting entries; update "Known limitations" with duplicate handling and environment extraction notes; add a new "Topics I would discuss with the team" chapter covering schema design, code split strategy, and duplicate event policy.
+**Files affected:** README.md
+
+## [2026-06-07 17:45] Add integration test for duplicate event ingestion
+
+**Prompt:** Add an integration test that sends the same webhook payload twice and asserts both return 201.
+**Files affected:** MetricsHub/tests/MetricsHub.Integration.Tests/Webhooks/WebhooksControllerTests.cs
+
+## [2026-06-07 17:40] Handle duplicate event ingestion gracefully
+
+**Prompt:** In IngestAsync, catch PostgresException with SqlState 23505 (unique violation), log an info message, and return without throwing instead of propagating a 500 error.
+**Files affected:** MetricsHub/src/MetricsHub.Application/MetricsHub.Application.csproj, MetricsHub/src/MetricsHub.Application/Services/Webhooks/WebhookIngestionService.cs
+
 ## [2026-06-07 17:25] Add Range validation to EventQuery and test for negative page
 
 **Prompt:** Add [Range] validation annotations to EventQuery.Page (min 1) and EventQuery.PageSize (1–100) so negative/zero values return 400; add integration test for page=-1.

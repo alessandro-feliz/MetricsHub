@@ -1,6 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <PackageReference Include="Npgsql" Version="9.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\MetricsHub.Domain\MetricsHub.Domain.csproj" />
     <ProjectReference Include="..\MetricsHub.Infrastructure\MetricsHub.Infrastructure.csproj" />
   </ItemGroup>

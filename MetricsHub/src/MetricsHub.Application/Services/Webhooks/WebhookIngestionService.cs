@@ -1,9 +1,10 @@
-using MetricsHub.Application.Normalization;
 using MetricsHub.Application.Exceptions;
+using MetricsHub.Application.Normalization;
 using MetricsHub.Domain;
 using MetricsHub.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Npgsql;
 
 namespace MetricsHub.Application.Services.Webhooks;
 
@@ -26,14 +27,18 @@ public class WebhookIngestionService(NormalizerStrategy normalizer, MetricsHubDb
         {
             db.Events.Add(normalized);
             await db.SaveChangesAsync(ct);
+
+            logger.LogInformation("Ingested event {SourceEventId} from {Source}", normalized.SourceEventId, normalized.Source);
+        }
+        catch (DbUpdateException ex) when (ex.InnerException is PostgresException { SqlState: PostgresErrorCodes.UniqueViolation })
+        {
+            logger.LogInformation("Duplicate event {SourceEventId} from {Source} — already ingested, skipping", normalized.SourceEventId, normalized.Source);
         }
         catch (DbUpdateException ex)
         {
             logger.LogError(ex, "Failed to persist event {SourceEventId} from {Source}", normalized.SourceEventId, normalized.Source);
             throw;
         }
-
-        logger.LogInformation("Ingested event {SourceEventId} from {Source}", normalized.SourceEventId, normalized.Source);
 
         return normalized;
     }

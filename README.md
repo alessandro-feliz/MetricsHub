@@ -232,10 +232,34 @@ Services use `MetricsHubDbContext` directly — no repository layer. The abstrac
 
 ## What I would do differently with more time or in a production context
 
+**Endpoint authentication** — the endpoints are completely open. In production, at minimum an API key on the ingestion endpoint and on the query endpoint.
 
+**Cleanup routines for persisted events** — without a retention policy, the events table grows indefinitely. A scheduled cleanup mechanism (either a `BackgroundService` running on a cron schedule or an external CronJob in Kubernetes) should periodically purge events older than a configurable retention window.
+
+**Rate limiting** — ASP.NET Core's built-in `RateLimiter` middleware covers single-instance deployments with a fixed-window or sliding-window limiter on `/webhooks`. For multi-instance deployments where rate limits must be enforced across the cluster rather than per instance, a Redis-backed distributed limiter is the appropriate choice.
+
+**Structured log correlation** — a middleware that sets a `TraceIdentifier` / `X-Request-Id` header and includes it in every log entry would let a failed ingestion be traced from the HTTP layer down to the service.
+
+**Healthcheck granularity** — split into liveness (`/health/live`) and readiness (`/health/ready`). The database check belongs in readiness only; liveness should never depend on external services.
 
 ---
 
 ## Known limitations and shortcuts
 
+**Environment extracted from the first Pulse tag** — the `Environment` field is populated from `tags[0]` of the Pulse payload. The actual convention for this field is not documented in the assessment spec; the code notes this with a `TODO`. A dedicated `environment` field in the payload would be more reliable.
 
+**`Metrics` column is not filterable** — the `jsonb` column is returned as-is in query responses but cannot be filtered via `/events` query parameters. Adding JSON path filtering would require raw SQL or Npgsql-specific LINQ extensions.
+
+**Integration tests require Docker** — the test suite has no in-memory fallback. Running `dotnet test tests/MetricsHub.Integration.Tests` without Docker Desktop running will fail immediately with a `DockerUnavailableException`.
+
+**Single-instance deployment assumed** — EF Core migrations run at startup without a distributed lock. Running multiple replicas simultaneously could cause migration race conditions.
+
+---
+
+## Topics I would discuss or clarify with the team
+
+**Database schema design** — a single `NormalizedEvent` table works for this scope, but the right answer depends on query patterns and volume. A second table for source-specific metadata, a NoSQL store for the raw payloads, or a mixed SQL/NoSQL approach could each be justified. This warrants a conversation before the schema is set in stone.
+
+**Code split strategy** — the current split is by technical layer (Domain / Application / Infrastructure / Api). Depending on team size and deployment needs, splitting by feature (Webhooks, Events) or by consumer could make sense, though a consumer-per-service split increases operational complexity and needs to be weighed against the autonomy it provides.
+
+**Duplicate event policy** — the current behaviour (log and ignore) is a pragmatic default, but the right answer depends on business requirements: silently skip, return the existing event, update if a version or sequence number indicates a newer payload, or surface a conflict to the caller. This should be an explicit decision rather than a default.
