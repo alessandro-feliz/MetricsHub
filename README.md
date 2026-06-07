@@ -242,6 +242,10 @@ Services use `MetricsHubDbContext` directly — no repository layer. The abstrac
 
 **Healthcheck granularity** — split into liveness (`/health/live`) and readiness (`/health/ready`). The database check belongs in readiness only; liveness should never depend on external services.
 
+**Deferred correlation resolution** — a `BackgroundService` (or scheduled job) should periodically scan Sentry events whose `CorrelationId` is non-null but whose referenced Pulse event has not yet been ingested, and resolve the link once the Pulse event arrives. This handles out-of-order webhook delivery without rejecting valid events at ingestion time.
+
+**Correlated event resolution in query responses** — the GET `/events` endpoint should optionally resolve and embed a `correlatedEvent` field on Sentry results when the linked Pulse event is present, so consumers do not need to perform a second query and manual join to trace an alert back to its originating heartbeat.
+
 ---
 
 ## Known limitations and shortcuts
@@ -254,7 +258,9 @@ Services use `MetricsHubDbContext` directly — no repository layer. The abstrac
 
 **Single-instance deployment assumed** — EF Core migrations run at startup without a distributed lock. Running multiple replicas simultaneously could cause migration race conditions.
 
-**Duplicate event policy** — Duplicated events are ignored and the API returns a 201. The client is not able to know if the event was created and ignore because it was duplicated.
+**Correlation is advisory only** — when a Sentry event references a Pulse event via `correlation_id`, no validation is performed at ingestion time. The referenced Pulse event may not exist, may arrive later, or may never arrive. The field is stored as a plain string with no referential integrity enforced; resolving the relationship is left entirely to the consumer.
+
+**Duplicate event policy** — Duplicated events are ignored and the API returns a 201. The client is not able to know if the event was created or ignore because it was duplicated. A possible solution could be simply returning a 200.
 
 ---
 
