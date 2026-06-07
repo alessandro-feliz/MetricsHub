@@ -19,6 +19,7 @@ Rules:
 
 ## Git Commits
 - Never add a `Co-Authored-By` or any Claude/AI signature line to commit messages.
+- Never create a git commit unless the user explicitly asks for one.
 
 ## General Behavior
 - Write clean, idiomatic C# / .NET 8 code.

@@ -1,6 +1,7 @@
 using MetricsHub.Application.Normalization;
 using MetricsHub.Application.Normalization.Pulse;
 using MetricsHub.Application.Normalization.Sentry;
+using MetricsHub.Application.Services.Events;
 using MetricsHub.Application.Services.Webhooks;
 using MetricsHub.Infrastructure;
 using Microsoft.EntityFrameworkCore;
@@ -19,6 +20,7 @@ builder.Services.AddScoped<IEventNormalizer, PulseNormalizer>();
 builder.Services.AddScoped<IEventNormalizer, SentryNormalizer>();
 builder.Services.AddScoped<NormalizerStrategy>();
 builder.Services.AddScoped<WebhookIngestionService>();
+builder.Services.AddScoped<EventQueryService>();
 
 var app = builder.Build();
 

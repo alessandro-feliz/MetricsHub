@@ -1,5 +1,15 @@
 # AI Prompt Log
 
+## [2026-06-07 14:35] Add rule to never commit without explicit user instruction
+
+**Prompt:** Update CLAUDE.md to never create a git commit unless the user explicitly asks for one.
+**Files affected:** CLAUDE.md
+
+## [2026-06-07 14:30] Implement Iteration 4 — query endpoint and integration tests
+
+**Prompt:** Implement Iteration 4: EventQuery and PagedResult classes in Application/Services/Events/; EventQueryService with IQueryable filtering chain (from, to, source, resource) and pagination; EventsController (GET /events); register EventQueryService in Program.cs; 6 integration tests covering response structure, source filter, resource filter, time range, and pagination.
+**Files affected:** src/MetricsHub.Application/Services/Events/EventQuery.cs, src/MetricsHub.Application/Services/Events/PagedResult.cs, src/MetricsHub.Application/Services/Events/EventQueryService.cs, src/MetricsHub.Api/Events/EventsController.cs, src/MetricsHub.Api/Program.cs, tests/MetricsHub.Integration.Tests/Events/EventsControllerTests.cs
+
 ## [2026-06-07 14:10] Commit staged formatting and comment tweaks
 
 **Prompt:** Commit the staged files after minor post-review edits.
