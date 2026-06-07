@@ -1,0 +1,228 @@
+{
+  "info": {
+    "name": "MetricsHub",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Pulse Events",
+      "item": [
+        {
+          "name": "Pulse 1 — healthy worker, production",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/webhooks",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "X-Source", "value": "pulse" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pulse_id\": \"p-001\",\n  \"ts\": \"2026-06-07T10:00:00Z\",\n  \"node\": \"worker-us-east-01\",\n  \"region\": \"us-east-1\",\n  \"metrics\": {\n    \"cpu_pct\": 42.1,\n    \"mem_mb\": 2048,\n    \"active_conns\": 87,\n    \"status\": \"healthy\"\n  },\n  \"tags\": [\"production\", \"tier-1\"]\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Pulse 2 — high CPU worker, staging",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/webhooks",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "X-Source", "value": "pulse" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pulse_id\": \"p-002\",\n  \"ts\": \"2026-06-07T10:05:00Z\",\n  \"node\": \"worker-eu-west-03\",\n  \"region\": \"eu-west-1\",\n  \"metrics\": {\n    \"cpu_pct\": 91.7,\n    \"mem_mb\": 3840,\n    \"active_conns\": 210,\n    \"status\": \"degraded\"\n  },\n  \"tags\": [\"staging\"]\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Pulse 3 — low activity worker, production",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/webhooks",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "X-Source", "value": "pulse" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pulse_id\": \"p-003\",\n  \"ts\": \"2026-06-07T10:10:00Z\",\n  \"node\": \"worker-ap-south-02\",\n  \"region\": \"ap-south-1\",\n  \"metrics\": {\n    \"cpu_pct\": 5.3,\n    \"mem_mb\": 512,\n    \"active_conns\": 3,\n    \"status\": \"healthy\"\n  },\n  \"tags\": [\"production\"]\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sentry Events",
+      "item": [
+        {
+          "name": "Sentry 1 — high error rate alert",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/webhooks",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "X-Source", "value": "sentry" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"alert_id\": \"sentry-001\",\n  \"fired_at\": \"2026-06-07T10:02:00Z\",\n  \"resource\": {\n    \"name\": \"worker-us-east-01\",\n    \"group\": \"us-east-1\",\n    \"environment\": \"production\"\n  },\n  \"rule\": {\n    \"name\": \"High Error Rate\",\n    \"threshold\": 5.0,\n    \"actual\": 18.4,\n    \"metric\": \"error_rate\",\n    \"severity\": \"critical\"\n  },\n  \"correlation_id\": \"p-001\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Sentry 2 — memory threshold breach",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/webhooks",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "X-Source", "value": "sentry" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"alert_id\": \"sentry-002\",\n  \"fired_at\": \"2026-06-07T10:06:00Z\",\n  \"resource\": {\n    \"name\": \"worker-eu-west-03\",\n    \"group\": \"eu-west-1\",\n    \"environment\": \"staging\"\n  },\n  \"rule\": {\n    \"name\": \"Memory Threshold\",\n    \"threshold\": 3500.0,\n    \"actual\": 3840.0,\n    \"metric\": \"mem_mb\",\n    \"severity\": \"warning\"\n  },\n  \"correlation_id\": \"p-002\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Sentry 3 — latency spike, no correlation",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/webhooks",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "X-Source", "value": "sentry" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"alert_id\": \"sentry-003\",\n  \"fired_at\": \"2026-06-07T10:15:00Z\",\n  \"resource\": {\n    \"name\": \"api-gateway\",\n    \"group\": \"us-east-1\",\n    \"environment\": \"production\"\n  },\n  \"rule\": {\n    \"name\": \"Latency Spike\",\n    \"threshold\": 200.0,\n    \"actual\": 850.0,\n    \"metric\": \"p99_latency_ms\",\n    \"severity\": \"critical\"\n  },\n  \"correlation_id\": \"\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Event Queries",
+      "item": [
+        {
+          "name": "All events",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/events"
+          }
+        },
+        {
+          "name": "Filter by source — pulse only",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/events?source=pulse",
+              "query": [{ "key": "source", "value": "pulse" }]
+            }
+          }
+        },
+        {
+          "name": "Filter by source — sentry only",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/events?source=sentry",
+              "query": [{ "key": "source", "value": "sentry" }]
+            }
+          }
+        },
+        {
+          "name": "Filter by exact node name",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/events?node=worker-us-east-01",
+              "query": [{ "key": "node", "value": "worker-us-east-01" }]
+            }
+          }
+        },
+        {
+          "name": "Filter by time range",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/events?from=2026-06-07T10:00:00Z&to=2026-06-07T10:10:00Z",
+              "query": [
+                { "key": "from", "value": "2026-06-07T10:00:00Z" },
+                { "key": "to", "value": "2026-06-07T10:10:00Z" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Filter by source and time range",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/events?source=sentry&from=2026-06-07T10:00:00Z&to=2026-06-07T11:00:00Z",
+              "query": [
+                { "key": "source", "value": "sentry" },
+                { "key": "from", "value": "2026-06-07T10:00:00Z" },
+                { "key": "to", "value": "2026-06-07T11:00:00Z" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Paginated — page 1, 2 items per page",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/events?pageSize=2&page=1",
+              "query": [
+                { "key": "pageSize", "value": "2" },
+                { "key": "page", "value": "1" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Paginated — page 2, 2 items per page",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/events?pageSize=2&page=2",
+              "query": [
+                { "key": "pageSize", "value": "2" },
+                { "key": "page", "value": "2" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Health check",
+      "item": [
+        {
+          "name": "Health",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/health"
+          }
+        }
+      ]
+    }
+  ]
+}

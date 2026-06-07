@@ -1,0 +1,160 @@
+@baseUrl = http://localhost:8080
+
+### ─── Pulse Events ────────────────────────────────────────────────────────────
+
+### Pulse 1 — healthy worker, production
+POST {{baseUrl}}/webhooks
+Content-Type: application/json
+X-Source: pulse
+
+{
+    "pulse_id": "p-001",
+    "ts": "2026-06-07T10:00:00Z",
+    "node": "worker-us-east-01",
+    "region": "us-east-1",
+    "metrics": {
+        "cpu_pct": 42.1,
+        "mem_mb": 2048,
+        "active_conns": 87,
+        "status": "healthy"
+    },
+    "tags": ["production", "tier-1"]
+}
+
+### Pulse 2 — high CPU worker, staging
+POST {{baseUrl}}/webhooks
+Content-Type: application/json
+X-Source: pulse
+
+{
+    "pulse_id": "p-002",
+    "ts": "2026-06-07T10:05:00Z",
+    "node": "worker-eu-west-03",
+    "region": "eu-west-1",
+    "metrics": {
+        "cpu_pct": 91.7,
+        "mem_mb": 3840,
+        "active_conns": 210,
+        "status": "degraded"
+    },
+    "tags": ["staging"]
+}
+
+### Pulse 3 — low activity worker, production
+POST {{baseUrl}}/webhooks
+Content-Type: application/json
+X-Source: pulse
+
+{
+    "pulse_id": "p-003",
+    "ts": "2026-06-07T10:10:00Z",
+    "node": "worker-ap-south-02",
+    "region": "ap-south-1",
+    "metrics": {
+        "cpu_pct": 5.3,
+        "mem_mb": 512,
+        "active_conns": 3,
+        "status": "healthy"
+    },
+    "tags": ["production"]
+}
+
+### ─── Sentry Events ───────────────────────────────────────────────────────────
+
+### Sentry 1 — high error rate alert
+POST {{baseUrl}}/webhooks
+Content-Type: application/json
+X-Source: sentry
+
+{
+    "alert_id": "sentry-001",
+    "fired_at": "2026-06-07T10:02:00Z",
+    "resource": {
+        "name": "worker-us-east-01",
+        "group": "us-east-1",
+        "environment": "production"
+    },
+    "rule": {
+        "name": "High Error Rate",
+        "threshold": 5.0,
+        "actual": 18.4,
+        "metric": "error_rate",
+        "severity": "critical"
+    },
+    "correlation_id": "p-001"
+}
+
+### Sentry 2 — memory threshold breach
+POST {{baseUrl}}/webhooks
+Content-Type: application/json
+X-Source: sentry
+
+{
+    "alert_id": "sentry-002",
+    "fired_at": "2026-06-07T10:06:00Z",
+    "resource": {
+        "name": "worker-eu-west-03",
+        "group": "eu-west-1",
+        "environment": "staging"
+    },
+    "rule": {
+        "name": "Memory Threshold",
+        "threshold": 3500.0,
+        "actual": 3840.0,
+        "metric": "mem_mb",
+        "severity": "warning"
+    },
+    "correlation_id": "p-002"
+}
+
+### Sentry 3 — latency spike, no correlation
+POST {{baseUrl}}/webhooks
+Content-Type: application/json
+X-Source: sentry
+
+{
+    "alert_id": "sentry-003",
+    "fired_at": "2026-06-07T10:15:00Z",
+    "resource": {
+        "name": "api-gateway",
+        "group": "us-east-1",
+        "environment": "production"
+    },
+    "rule": {
+        "name": "Latency Spike",
+        "threshold": 200.0,
+        "actual": 850.0,
+        "metric": "p99_latency_ms",
+        "severity": "critical"
+    },
+    "correlation_id": ""
+}
+
+### ─── Event Queries ───────────────────────────────────────────────────────────
+
+### All events (default page 1, size 20)
+GET {{baseUrl}}/events
+
+### Filter by source — pulse only
+GET {{baseUrl}}/events?source=pulse
+
+### Filter by source — sentry only
+GET {{baseUrl}}/events?source=sentry
+
+### Filter by exact node name
+GET {{baseUrl}}/events?node=worker-us-east-01
+
+### Filter by time range
+GET {{baseUrl}}/events?from=2026-06-07T10:00:00Z&to=2026-06-07T10:10:00Z
+
+### Filter by source and time range
+GET {{baseUrl}}/events?source=sentry&from=2026-06-07T10:00:00Z&to=2026-06-07T11:00:00Z
+
+### Paginated — page 1, 2 items per page
+GET {{baseUrl}}/events?pageSize=2&page=1
+
+### Paginated — page 2, 2 items per page
+GET {{baseUrl}}/events?pageSize=2&page=2
+
+### Health check
+GET {{baseUrl}}/health

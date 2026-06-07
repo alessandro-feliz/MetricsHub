@@ -1,5 +1,25 @@
 # AI Prompt Log
 
+## [2026-06-07 17:00] Add Postman collection and update README step 4
+
+**Prompt:** Add a Postman collection JSON file users can import alongside the existing .http file; update the Send sample requests section to include both options with import steps.
+**Files affected:** MetricsHub.postman_collection.json, README.md
+
+## [2026-06-07 16:35] Expand Running the solution chapter with step-by-step instructions
+
+**Prompt:** Update the Running the solution section with numbered steps: clone, navigate, docker compose up, verify health, execute .http requests in order, stop.
+**Files affected:** README.md
+
+## [2026-06-07 16:30] Write README.md
+
+**Prompt:** Create a README covering how to build and run, port mappings, API usage, design decisions with reasoning, what would be done differently in production, and known limitations.
+**Files affected:** README.md
+
+## [2026-06-07 16:20] Create HTTP requests file with pulse, sentry, and query examples
+
+**Prompt:** Create a .http file with 3 Pulse webhook requests, 3 Sentry webhook requests, and event query requests covering all filter combinations.
+**Files affected:** src/MetricsHub.Api/MetricsHub.Api.http
+
 ## [2026-06-07 16:10] Configure JsonStringEnumConverter globally
 
 **Prompt:** Serialize enums as strings in all JSON responses by adding JsonStringEnumConverter to AddControllers().AddJsonOptions() in Program.cs.
