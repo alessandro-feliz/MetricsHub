@@ -13,7 +13,7 @@ An internal webhook aggregation API that receives events from Pulse and Sentry, 
 ### 1. Clone and navigate to the solution folder
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/alessandro-feliz/MetricsHub.git
 cd MetricsHub/MetricsHub
 ```
 
