@@ -5,6 +5,41 @@
 **Prompt:** Rename ResourceName to Node, make Region and Environment non-nullable, add RawPayload column, change Source to enum, remove source-specific fields and replace with a JSON Metrics column.
 **Files affected:** MetricsHub/PLAN.md
 
+## [2026-06-07 13:35] Add post-change format and test rule to CLAUDE.md
+
+**Prompt:** Update CLAUDE.md so that after every code change, Claude runs dotnet format and dotnet test, fixing issues until all unit tests pass.
+**Files affected:** CLAUDE.md
+
+## [2026-06-07 13:30] Mark NormalizedEvent properties as required and set IngestedAt in normalizers
+
+**Prompt:** Mark all non-nullable, non-auto-generated NormalizedEvent properties as required and remove default! initializers; add IngestedAt = DateTimeOffset.UtcNow to both normalizers to satisfy the compiler.
+**Files affected:** src/MetricsHub.Domain/NormalizedEvent.cs, src/MetricsHub.Application/Normalization/Pulse/PulseNormalizer.cs, src/MetricsHub.Application/Normalization/Sentry/SentryNormalizer.cs
+
+## [2026-06-07 13:25] Set Pulse CorrelationId to null and update unit test
+
+**Prompt:** Pulse events should always have CorrelationId set to null; update the normalizer and the corresponding unit test.
+**Files affected:** src/MetricsHub.Application/Normalization/Pulse/PulseNormalizer.cs, tests/MetricsHub.Unit.Tests/Normalization/PulseNormalizerTests.cs
+
+## [2026-06-07 13:20] Add always-use-braces rule to CLAUDE.md and apply to existing normalizers
+
+**Prompt:** Update CLAUDE.md to always use braces for if/else/for/foreach/using/lock bodies, and fix the braceless if statements in the existing normalizers.
+**Files affected:** CLAUDE.md, src/MetricsHub.Application/Normalization/Pulse/PulseNormalizer.cs, src/MetricsHub.Application/Normalization/Sentry/SentryNormalizer.cs
+
+## [2026-06-07 13:15] Add primary constructor rule to CLAUDE.md and apply to existing code
+
+**Prompt:** Update CLAUDE.md to require primary constructors wherever possible, and apply the rule to InvalidPayloadException and UnknownSourceException.
+**Files affected:** CLAUDE.md, src/MetricsHub.Application/Normalization/Exceptions/InvalidPayloadException.cs, src/MetricsHub.Application/Normalization/Exceptions/UnknownSourceException.cs
+
+## [2026-06-07 13:10] Move exception classes into Normalization/Exceptions/ folder
+
+**Prompt:** Move InvalidPayloadException and UnknownSourceException into a dedicated Exceptions/ subfolder under Normalization/, updating namespaces and all usings.
+**Files affected:** src/MetricsHub.Application/Normalization/Exceptions/InvalidPayloadException.cs, src/MetricsHub.Application/Normalization/Exceptions/UnknownSourceException.cs, src/MetricsHub.Application/Normalization/NormalizerStrategy.cs, src/MetricsHub.Application/Normalization/Pulse/PulseNormalizer.cs, src/MetricsHub.Application/Normalization/Sentry/SentryNormalizer.cs, tests/MetricsHub.Unit.Tests/Webhooks/PulseNormalizerTests.cs, tests/MetricsHub.Unit.Tests/Webhooks/SentryNormalizerTests.cs
+
+## [2026-06-07 13:00] Implement Iteration 2 — normalization strategy pattern and unit tests
+
+**Prompt:** Implement Iteration 2: IEventNormalizer interface, NormalizerStrategy context, InvalidPayloadException, UnknownSourceException, PulsePayload/PulseMetrics/PulseNormalizer, SentryPayload/SentryResource/SentryRule/SentryNormalizer, and unit tests for both normalizers (21 tests, all passing).
+**Files affected:** src/MetricsHub.Application/Normalization/IEventNormalizer.cs, src/MetricsHub.Application/Normalization/NormalizerStrategy.cs, src/MetricsHub.Application/Normalization/InvalidPayloadException.cs, src/MetricsHub.Application/Normalization/UnknownSourceException.cs, src/MetricsHub.Application/Normalization/Pulse/PulsePayload.cs, src/MetricsHub.Application/Normalization/Pulse/PulseMetrics.cs, src/MetricsHub.Application/Normalization/Pulse/PulseNormalizer.cs, src/MetricsHub.Application/Normalization/Sentry/SentryPayload.cs, src/MetricsHub.Application/Normalization/Sentry/SentryResource.cs, src/MetricsHub.Application/Normalization/Sentry/SentryRule.cs, src/MetricsHub.Application/Normalization/Sentry/SentryNormalizer.cs, tests/MetricsHub.Unit.Tests/Webhooks/PulseNormalizerTests.cs, tests/MetricsHub.Unit.Tests/Webhooks/SentryNormalizerTests.cs, tests/MetricsHub.Unit.Tests/UnitTest1.cs (deleted), tests/MetricsHub.Integration.Tests/UnitTest1.cs (deleted)
+
 ## [2026-06-07 12:20] Add src and tests solution folders to MetricsHub.slnx
 
 **Prompt:** Update the solution file to display projects grouped under src/ and tests/ solution folders.

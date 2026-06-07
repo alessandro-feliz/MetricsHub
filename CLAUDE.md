@@ -24,4 +24,11 @@ Rules:
 - Write clean, idiomatic C# / .NET 8 code.
 - Prefer explicit over clever.
 - One class or enum per file — no exceptions.
+- Use primary constructors whenever possible (C# 12).
+- Always use braces for the body of if/else, for, foreach, using, and lock statements — no single-line omissions.
 - If you are unsure about a design decision, ask — do not assume.
+
+## After Every Code Change
+1. Run `dotnet format` on the solution to format all changed files.
+2. Run `dotnet test tests/MetricsHub.Unit.Tests/MetricsHub.Unit.Tests.csproj` to execute unit tests.
+3. If any tests fail, fix the root cause and repeat from step 1 until all tests pass.

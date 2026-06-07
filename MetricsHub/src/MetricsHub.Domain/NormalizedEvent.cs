@@ -4,15 +4,15 @@ namespace MetricsHub.Domain;
 
 public class NormalizedEvent
 {
-    public Guid Id { get; set; }
-    public EventSource Source { get; set; }
-    public string SourceEventId { get; set; } = default!;
-    public DateTimeOffset OccurredAt { get; set; }
-    public DateTimeOffset IngestedAt { get; set; }
-    public string Node { get; set; } = default!;
-    public string Region { get; set; } = default!;
-    public string Environment { get; set; } = default!;
-    public string? CorrelationId { get; set; }
-    public string RawPayload { get; set; } = default!;
-    public JsonDocument Metrics { get; set; } = default!;
+    public required Guid Id { get; set; }
+    public required EventSource Source { get; set; }
+    public required string SourceEventId { get; set; }
+    public required DateTimeOffset OccurredAt { get; set; }
+    public required DateTimeOffset IngestedAt { get; set; }
+    public required string Node { get; set; }
+    public required string Region { get; set; }
+    public required string Environment { get; set; }
+    public required string? CorrelationId { get; set; }
+    public required string RawPayload { get; set; }
+    public required JsonDocument Metrics { get; set; }
 }
