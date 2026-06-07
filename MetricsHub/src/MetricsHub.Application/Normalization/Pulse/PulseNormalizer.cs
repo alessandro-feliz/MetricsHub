@@ -13,8 +13,20 @@ public class PulseNormalizer : IEventNormalizer
 
     public NormalizedEvent Normalize(string rawPayload)
     {
-        var payload = JsonSerializer.Deserialize<PulsePayload>(rawPayload, DeserializeOptions)
-            ?? throw new InvalidPayloadException("Pulse payload deserialized to null.");
+        PulsePayload? payload;
+        try
+        {
+            payload = JsonSerializer.Deserialize<PulsePayload>(rawPayload, DeserializeOptions);
+        }
+        catch (JsonException ex)
+        {
+            throw new InvalidPayloadException($"Invalid JSON: {ex.Message}");
+        }
+
+        if (payload is null)
+        {
+            throw new InvalidPayloadException("Pulse payload deserialized to null.");
+        }
 
         if (string.IsNullOrWhiteSpace(payload.PulseId))
         {

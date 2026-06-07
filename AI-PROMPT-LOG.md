@@ -1,5 +1,15 @@
 # AI Prompt Log
 
+## [2026-06-07 14:10] Commit staged formatting and comment tweaks
+
+**Prompt:** Commit the staged files after minor post-review edits.
+**Files affected:** src/MetricsHub.Api/Program.cs, src/MetricsHub.Api/Webhooks/WebhooksController.cs, src/MetricsHub.Application/Services/Webhooks/WebhookIngestionService.cs
+
+## [2026-06-07 14:00] Implement Iteration 3 — webhook endpoint and integration tests
+
+**Prompt:** Implement Iteration 3: WebhookIngestionService in Application/Services/Webhooks/; WebhooksController (POST /webhooks) reading X-Source header; register PulseNormalizer, SentryNormalizer, NormalizerStrategy, and WebhookIngestionService in Program.cs; wrap JsonException in both normalizers so malformed JSON returns 422; add public partial class Program for WebApplicationFactory; write MetricsHubWebApplicationFactory (Testcontainers) and 6 integration tests (happy path Pulse/Sentry, missing header, unknown source, malformed JSON, missing required field).
+**Files affected:** src/MetricsHub.Application/Services/Webhooks/WebhookIngestionService.cs, src/MetricsHub.Application/Normalization/Pulse/PulseNormalizer.cs, src/MetricsHub.Application/Normalization/Sentry/SentryNormalizer.cs, src/MetricsHub.Api/Webhooks/WebhooksController.cs, src/MetricsHub.Api/Program.cs, tests/MetricsHub.Integration.Tests/MetricsHubWebApplicationFactory.cs, tests/MetricsHub.Integration.Tests/Webhooks/WebhooksControllerTests.cs
+
 ## [2026-06-07 11:25] Update NormalizedEvent model in PLAN.md
 
 **Prompt:** Rename ResourceName to Node, make Region and Environment non-nullable, add RawPayload column, change Source to enum, remove source-specific fields and replace with a JSON Metrics column.

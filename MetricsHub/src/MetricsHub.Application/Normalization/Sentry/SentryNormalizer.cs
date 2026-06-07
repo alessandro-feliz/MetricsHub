@@ -13,8 +13,20 @@ public class SentryNormalizer : IEventNormalizer
 
     public NormalizedEvent Normalize(string rawPayload)
     {
-        var payload = JsonSerializer.Deserialize<SentryPayload>(rawPayload, DeserializeOptions)
-            ?? throw new InvalidPayloadException("Sentry payload deserialized to null.");
+        SentryPayload? payload;
+        try
+        {
+            payload = JsonSerializer.Deserialize<SentryPayload>(rawPayload, DeserializeOptions);
+        }
+        catch (JsonException ex)
+        {
+            throw new InvalidPayloadException($"Invalid JSON: {ex.Message}");
+        }
+
+        if (payload is null)
+        {
+            throw new InvalidPayloadException("Sentry payload deserialized to null.");
+        }
 
         if (string.IsNullOrWhiteSpace(payload.AlertId))
         {
