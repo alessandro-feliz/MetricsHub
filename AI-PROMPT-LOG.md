@@ -1,5 +1,60 @@
 # AI Prompt Log
 
+## [2026-06-07 16:10] Configure JsonStringEnumConverter globally
+
+**Prompt:** Serialize enums as strings in all JSON responses by adding JsonStringEnumConverter to AddControllers().AddJsonOptions() in Program.cs.
+**Files affected:** src/MetricsHub.Api/Program.cs
+
+## [2026-06-07 16:05] Change node filter to equality and fix pagination tests
+
+**Prompt:** Fix failing Get_FilterBySourcePulse test; change EventQueryService node filter from Contains to == (exact match); update pagination tests which relied on prefix-based Contains matching to use the same node name for all seeded events.
+**Files affected:** src/MetricsHub.Application/Services/Events/EventQueryService.cs, tests/MetricsHub.Integration.Tests/Events/EventsControllerTests.cs
+
+## [2026-06-07 15:55] Fix integration test isolation after Resource→Node rename
+
+**Prompt:** Fix failing integration tests caused by: (1) URL parameter still using ?resource= after EventQuery.Resource was renamed to Node — updated all test URLs to ?node=; (2) prefix collision where ?node=node-page also matched node-page2 events — renamed prefixes to node-pag1/node-pag2; also renamed Get_FilterByResource test method to Get_FilterByNode.
+**Files affected:** tests/MetricsHub.Integration.Tests/Events/EventsControllerTests.cs
+
+## [2026-06-07 15:50] Move LogInformation call to after SaveChangesAsync in IngestAsync
+
+**Prompt:** Move the ingestion log entry to after the DB save so it only records events that were successfully persisted.
+**Files affected:** src/MetricsHub.Application/Services/Webhooks/WebhookIngestionService.cs
+
+## [2026-06-07 15:45] Suppress CS1591 missing XML doc warning
+
+**Prompt:** Add CS1591 to NoWarn in Directory.Build.props to suppress missing XML documentation comment warnings produced by GenerateDocumentationFile.
+**Files affected:** MetricsHub/Directory.Build.props
+
+## [2026-06-07 15:40] Enforce unused usings as build errors via Directory.Build.props
+
+**Prompt:** Configure the solution to treat unused using directives as build errors.
+**Files affected:** MetricsHub/Directory.Build.props
+
+## [2026-06-07 15:35] Move MetricsHubException to Application/Exceptions/ folder
+
+**Prompt:** Move MetricsHubException from Normalization/Exceptions/ to a new top-level Exceptions/ folder under Application, updating its namespace and all references.
+**Files affected:** src/MetricsHub.Application/Exceptions/MetricsHubException.cs, src/MetricsHub.Application/Normalization/Exceptions/InvalidPayloadException.cs, src/MetricsHub.Application/Normalization/Exceptions/UnknownSourceException.cs, src/MetricsHub.Application/Services/Webhooks/WebhookIngestionService.cs
+
+## [2026-06-07 15:30] Introduce MetricsHubException base class and tighten catch types in IngestAsync
+
+**Prompt:** Create abstract MetricsHubException base class; derive InvalidPayloadException and UnknownSourceException from it; update WebhookIngestionService to catch MetricsHubException in the normalization block and DbUpdateException in the DB block instead of the broad Exception.
+**Files affected:** src/MetricsHub.Application/Normalization/Exceptions/MetricsHubException.cs, src/MetricsHub.Application/Normalization/Exceptions/InvalidPayloadException.cs, src/MetricsHub.Application/Normalization/Exceptions/UnknownSourceException.cs, src/MetricsHub.Application/Services/Webhooks/WebhookIngestionService.cs
+
+## [2026-06-07 15:20] Add GlobalExceptionHandler middleware and simplify controller
+
+**Prompt:** Implement IExceptionHandler middleware that maps UnknownSourceException→400, InvalidPayloadException→422, OperationCanceledException→silently handled, everything else→500 with logging; register it in Program.cs; remove the catch blocks from WebhooksController.
+**Files affected:** src/MetricsHub.Api/Middleware/GlobalExceptionHandler.cs, src/MetricsHub.Api/Program.cs, src/MetricsHub.Api/Webhooks/WebhooksController.cs
+
+## [2026-06-07 15:10] Add CancellationToken to IngestAsync and update CLAUDE.md
+
+**Prompt:** Add CancellationToken parameter to WebhookIngestionService.IngestAsync and thread it through to SaveChangesAsync and ReadToEndAsync in the controller; add CLAUDE.md rule to always accept and forward CancellationToken in async methods.
+**Files affected:** src/MetricsHub.Application/Services/Webhooks/WebhookIngestionService.cs, src/MetricsHub.Api/Webhooks/WebhooksController.cs, CLAUDE.md
+
+## [2026-06-07 15:00] Implement Iteration 5 — polish, logging, and scaffold removal
+
+**Prompt:** Implement Iteration 5: remove WeatherForecast scaffold files; add structured ILogger<T> logging to WebhookIngestionService (info on ingest, warning on normalization failure, error on DB failure) and EventQueryService (info on query parameters); change docker-compose restart policy from on-failure to unless-stopped.
+**Files affected:** src/MetricsHub.Api/Controllers/WeatherForecastController.cs (deleted), src/MetricsHub.Api/WeatherForecast.cs (deleted), src/MetricsHub.Application/Services/Webhooks/WebhookIngestionService.cs, src/MetricsHub.Application/Services/Events/EventQueryService.cs, MetricsHub/docker-compose.yml
+
 ## [2026-06-07 14:35] Add rule to never commit without explicit user instruction
 
 **Prompt:** Update CLAUDE.md to never create a git commit unless the user explicitly asks for one.

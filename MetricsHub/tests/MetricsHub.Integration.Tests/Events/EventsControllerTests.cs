@@ -62,7 +62,7 @@ public class EventsControllerTests(MetricsHubWebApplicationFactory factory)
         await PostWebhookAsync("pulse", PulsePayload("p-src-1", "node-srcfilter", "2026-05-02T10:00:00Z"));
         await PostWebhookAsync("sentry", SentryPayload("s-src-1", "node-srcfilter", "2026-05-02T10:00:00Z"));
 
-        var response = await _client.GetAsync("/events?source=pulse&resource=node-srcfilter");
+        var response = await _client.GetAsync("/events?source=pulse&node=node-srcfilter");
 
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         var body = JsonDocument.Parse(await response.Content.ReadAsStringAsync()).RootElement;
@@ -73,12 +73,12 @@ public class EventsControllerTests(MetricsHubWebApplicationFactory factory)
     }
 
     [Fact]
-    public async Task Get_FilterByResource_ReturnsOnlyMatchingNode()
+    public async Task Get_FilterByNode_ReturnsOnlyMatchingNode()
     {
         var uniqueNode = "node-res-unique-xyz";
         await PostWebhookAsync("pulse", PulsePayload("p-res-1", uniqueNode, "2026-05-03T10:00:00Z"));
 
-        var response = await _client.GetAsync($"/events?resource={uniqueNode}");
+        var response = await _client.GetAsync($"/events?node={uniqueNode}");
 
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         var body = JsonDocument.Parse(await response.Content.ReadAsStringAsync()).RootElement;
@@ -94,7 +94,7 @@ public class EventsControllerTests(MetricsHubWebApplicationFactory factory)
         await PostWebhookAsync("pulse", PulsePayload("p-time-late", "node-timerange", "2026-06-01T00:00:00Z"));
 
         var response = await _client.GetAsync(
-            "/events?resource=node-timerange&from=2026-01-01T00:00:00Z&to=2026-12-31T23:59:59Z");
+            "/events?node=node-timerange&from=2026-01-01T00:00:00Z&to=2026-12-31T23:59:59Z");
 
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         var body = JsonDocument.Parse(await response.Content.ReadAsStringAsync()).RootElement;
@@ -106,12 +106,12 @@ public class EventsControllerTests(MetricsHubWebApplicationFactory factory)
     [Fact]
     public async Task Get_Pagination_ReturnsCorrectPageMetadata()
     {
-        var nodePrefix = "node-page";
-        await PostWebhookAsync("pulse", PulsePayload("p-page-1", $"{nodePrefix}-a", "2026-05-04T10:00:00Z"));
-        await PostWebhookAsync("pulse", PulsePayload("p-page-2", $"{nodePrefix}-b", "2026-05-04T11:00:00Z"));
-        await PostWebhookAsync("pulse", PulsePayload("p-page-3", $"{nodePrefix}-c", "2026-05-04T12:00:00Z"));
+        const string node = "node-pagination-1";
+        await PostWebhookAsync("pulse", PulsePayload("p-page-1", node, "2026-05-04T10:00:00Z"));
+        await PostWebhookAsync("pulse", PulsePayload("p-page-2", node, "2026-05-04T11:00:00Z"));
+        await PostWebhookAsync("pulse", PulsePayload("p-page-3", node, "2026-05-04T12:00:00Z"));
 
-        var response = await _client.GetAsync($"/events?resource={nodePrefix}&pageSize=2&page=1");
+        var response = await _client.GetAsync($"/events?node={node}&pageSize=2&page=1");
 
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         var body = JsonDocument.Parse(await response.Content.ReadAsStringAsync()).RootElement;
@@ -124,12 +124,12 @@ public class EventsControllerTests(MetricsHubWebApplicationFactory factory)
     [Fact]
     public async Task Get_SecondPage_ReturnsRemainingItems()
     {
-        var nodePrefix = "node-page2";
-        await PostWebhookAsync("pulse", PulsePayload("p-page2-1", $"{nodePrefix}-a", "2026-05-05T10:00:00Z"));
-        await PostWebhookAsync("pulse", PulsePayload("p-page2-2", $"{nodePrefix}-b", "2026-05-05T11:00:00Z"));
-        await PostWebhookAsync("pulse", PulsePayload("p-page2-3", $"{nodePrefix}-c", "2026-05-05T12:00:00Z"));
+        const string node = "node-pagination-2";
+        await PostWebhookAsync("pulse", PulsePayload("p-page2-1", node, "2026-05-05T10:00:00Z"));
+        await PostWebhookAsync("pulse", PulsePayload("p-page2-2", node, "2026-05-05T11:00:00Z"));
+        await PostWebhookAsync("pulse", PulsePayload("p-page2-3", node, "2026-05-05T12:00:00Z"));
 
-        var response = await _client.GetAsync($"/events?resource={nodePrefix}&pageSize=2&page=2");
+        var response = await _client.GetAsync($"/events?node={node}&pageSize=2&page=2");
 
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         var body = JsonDocument.Parse(await response.Content.ReadAsStringAsync()).RootElement;

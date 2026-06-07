@@ -3,12 +3,18 @@ using MetricsHub.Application.Normalization.Pulse;
 using MetricsHub.Application.Normalization.Sentry;
 using MetricsHub.Application.Services.Events;
 using MetricsHub.Application.Services.Webhooks;
+using MetricsHub.Api.Middleware;
 using MetricsHub.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
+
+builder.Services.AddControllers()
+    .AddJsonOptions(o => o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
 builder.Services.AddDbContext<MetricsHubDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -30,6 +36,7 @@ using (var scope = app.Services.CreateScope())
     await db.Database.MigrateAsync();
 }
 
+app.UseExceptionHandler();
 app.UseAuthorization();
 app.MapControllers();
 app.MapHealthChecks("/health");

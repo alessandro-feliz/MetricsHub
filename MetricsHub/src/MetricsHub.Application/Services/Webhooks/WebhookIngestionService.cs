@@ -1,17 +1,39 @@
 using MetricsHub.Application.Normalization;
+using MetricsHub.Application.Exceptions;
 using MetricsHub.Domain;
 using MetricsHub.Infrastructure;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace MetricsHub.Application.Services.Webhooks;
 
-public class WebhookIngestionService(NormalizerStrategy normalizer, MetricsHubDbContext db)
+public class WebhookIngestionService(NormalizerStrategy normalizer, MetricsHubDbContext db, ILogger<WebhookIngestionService> logger)
 {
-    public async Task<NormalizedEvent> IngestAsync(string sourceName, string rawPayload)
+    public async Task<NormalizedEvent> IngestAsync(string sourceName, string rawPayload, CancellationToken ct = default)
     {
-        var normalized = normalizer.Normalize(sourceName, rawPayload);
+        NormalizedEvent normalized;
+        try
+        {
+            normalized = normalizer.Normalize(sourceName, rawPayload);
+        }
+        catch (MetricsHubException ex)
+        {
+            logger.LogWarning(ex, "Normalization failed for source {Source}", sourceName);
+            throw;
+        }
 
-        db.Events.Add(normalized);
-        await db.SaveChangesAsync();
+        try
+        {
+            db.Events.Add(normalized);
+            await db.SaveChangesAsync(ct);
+        }
+        catch (DbUpdateException ex)
+        {
+            logger.LogError(ex, "Failed to persist event {SourceEventId} from {Source}", normalized.SourceEventId, normalized.Source);
+            throw;
+        }
+
+        logger.LogInformation("Ingested event {SourceEventId} from {Source}", normalized.SourceEventId, normalized.Source);
 
         return normalized;
     }

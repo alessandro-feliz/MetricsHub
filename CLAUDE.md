@@ -28,6 +28,7 @@ Rules:
 - Use primary constructors whenever possible (C# 12).
 - Always use braces for the body of if/else, for, foreach, using, and lock statements — no single-line omissions.
 - If you are unsure about a design decision, ask — do not assume.
+- Always accept and forward `CancellationToken` in async methods whenever possible.
 
 ## After Every Code Change
 1. Run `dotnet format` on the solution to format all changed files.

@@ -1,13 +1,17 @@
 using MetricsHub.Domain;
 using MetricsHub.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace MetricsHub.Application.Services.Events;
 
-public class EventQueryService(MetricsHubDbContext db)
+public class EventQueryService(MetricsHubDbContext db, ILogger<EventQueryService> logger)
 {
     public async Task<PagedResult<NormalizedEvent>> QueryAsync(EventQuery query, CancellationToken ct = default)
     {
+        logger.LogInformation("Querying events: source={Source} node={Node} from={From} to={To} page={Page} pageSize={PageSize}",
+            query.Source, query.Node, query.From, query.To, query.Page, query.PageSize);
+
         var events = db.Events.AsNoTracking().AsQueryable();
 
         if (query.From.HasValue)
@@ -25,9 +29,9 @@ public class EventQueryService(MetricsHubDbContext db)
             events = events.Where(e => e.Source == source);
         }
 
-        if (!string.IsNullOrWhiteSpace(query.Resource))
+        if (!string.IsNullOrWhiteSpace(query.Node))
         {
-            events = events.Where(e => e.Node.Contains(query.Resource));
+            events = events.Where(e => e.Node == query.Node);
         }
 
         var totalCount = await events.CountAsync(ct);
