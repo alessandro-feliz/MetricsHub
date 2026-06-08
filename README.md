@@ -246,6 +246,8 @@ Services use `MetricsHubDbContext` directly — no repository layer. The abstrac
 
 **Correlated event resolution in query responses** — the GET `/events` endpoint should optionally resolve and embed a `correlatedEvent` field on Sentry results when the linked Pulse event is present, so consumers do not need to perform a second query and manual join to trace an alert back to its originating heartbeat.
 
+**Database persistance async** — the bottlenect of the current solution will be the database persistence. A possible solution could be simply adding that event into a queue that would be consume by a diferent system (BackgroundService or Service) to be persisted.
+
 ---
 
 ## Known limitations and shortcuts
